@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+@import "tailwindcss";
+
+*{
+    font-family: "Roboto Condensed", sans-serif;
+}
+
+@layer base {
+    button{
+        cursor: pointer;
+    }
+    input:not([type = 'checkbox']){
+        @apply outline-none focus:ring border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg;
+    }
+    textarea{
+        @apply outline-none focus:ring border border-gray-300 focus:ring-blue-500 focus:border-blue-500 rounded-lg resize-none
+    }
+}
+
+/* testimonials */
+
+ @keyframes marqueeScroll {
+                0% { transform: translateX(0%); }
+                100% { transform: translateX(-50%); }
+            }
+
+            .marquee-inner {
+                animation: marqueeScroll 25s linear infinite;
+            }
+
+            .marquee-reverse {
+                animation-direction: reverse;
+            }
