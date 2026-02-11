@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, data } from "react-router-dom";
 import { dummyResumeData } from "./../assets";
 import {
   ArrowLeftIcon,
@@ -12,6 +12,14 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import PersonalInfo from "./PersonalInfo";
+import ResumePreview from "../components/ResumePreview";
+import TemplateSelector from "../components/TemplateSelector";
+import ColorPicker from "../components/ColorPicker";
+import ProfessionalSummary from "../components/ProfessionalSummary";
+import ExperienceForm from "../components/EXperienceForm";
+import EducationForm from "../components/EducationForm";
+import ProjectForm from "../components/ProjectForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -20,7 +28,7 @@ const ResumeBuilder = () => {
     _id: "",
     title: "",
     personal_info: {},
-    personal_summary: "",
+    professional_summary: "",
     experience: [],
     education: [],
     skills: [],
@@ -29,6 +37,9 @@ const ResumeBuilder = () => {
     accent_color: "#3b8256",
     public: false,
   });
+
+  console.log("Resume Data:", resumeData.personal_summary);
+
 
   const loadExistingdata = async () => {
     const resume = dummyResumeData.find((resume) => resume._id === resumeId);
@@ -43,7 +54,7 @@ const ResumeBuilder = () => {
 
   const sections = [
     { id: "personal", name: "Personal Info", icon: User },
-    { id: "summary", name: "Personal Summary", icon: FileText },
+    { id: "summary", name: "Professional Summary", icon: FileText },
     { id: "experience", name: "Experience", icon: Briefcase },
     { id: "education", name: "Education", icon: GraduationCap },
     { id: "projects", name: "Projects", icon: FolderIcon },
@@ -82,8 +93,26 @@ const ResumeBuilder = () => {
               />
 
               {/* Section navigation */}
-              <div className="flex justify-between items-center mb-6 border-b border-gray-200 py-1">
-                <div></div>
+              <div className="flex justify-between items-center mb-6 border-b border-gray-200 ">
+                <div>
+                  <TemplateSelector
+                    selectedTemplate={TemplateSelector}
+                    onChange={(template) =>
+                      setResumeData((prev) => ({ ...prev, template }))
+                    }
+                  />
+                </div>
+                <div className="mr-40">
+                  <ColorPicker
+                    selectedColor={resumeData.accent_color}
+                    onChange={(color) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        accent_color: color,
+                      }))
+                    }
+                  />
+                </div>
                 <div className="flex items-center">
                   {activeSectionIndex !== 0 && (
                     <button
@@ -115,13 +144,67 @@ const ResumeBuilder = () => {
 
               {/* form content */}
               <div className="space-y-6">
-                {activeSection.id === "summary" && <div></div>}
+                {activeSection.id === "personal" && (
+                  <PersonalInfo
+                    data={resumeData.personal_info}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        personal_info: data,
+                      }))
+                    }
+                    removeBackground={removeBackground}
+                    setRemoveBackground={setRemoveBackground}
+                  />
+                )}
+
+                {activeSection.id === "summary" && (
+                  <ProfessionalSummary
+                    data={resumeData.professional_summary}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        professional_summary: data,
+                      }))
+                    }
+                    setResumeData={setResumeData}
+                  />
+                )}
+
+                {activeSection.id === 'experience' && (
+                  <ExperienceForm 
+                  data={resumeData.experience}
+                  onChange={(data) => setResumeData((prev) => ({...prev,experience:data}))}
+                  />
+                )}
+
+                {activeSection.id === 'education' && (
+                  <EducationForm
+                  data={resumeData.education}
+                  onChange={(data) => setResumeData((prev) => ({...prev,education:data}))}
+                  />
+                )}
+
+                {activeSection.id === 'projects' && (
+                  <ProjectForm
+                  data={resumeData.project}
+                  onChange={(data) => setResumeData((prev) => ({...prev,project:data}))}
+                  />
+                )}
               </div>
             </div>
           </div>
 
           {/* Right panel */}
-          <div></div>
+          <div className="lg:col-span-7 max-lg:mt-6">
+            <div>{/* button */}</div>
+            {/* resume review */}
+            <ResumePreview
+              data={resumeData}
+              template={resumeData.template}
+              accentColor={resumeData.accent_color}
+            />
+          </div>
         </div>
       </div>
     </div>
